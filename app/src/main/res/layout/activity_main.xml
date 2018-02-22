@@ -52,9 +52,19 @@
         android:text="Enviar SMS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/btnPlay"
-        android:layout_toEndOf="@+id/btnPlay"
-        android:layout_marginStart="30dp"
         android:id="@+id/btnSms"
-        android:onClick="sendSMS" />
+        android:onClick="sendSMS"
+        android:layout_marginEnd="19dp"
+        android:layout_below="@+id/txtNombre"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:text="Send File"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnSendFile"
+        android:onClick="SendFile"
+        android:layout_below="@+id/btnSms"
+        android:layout_alignEnd="@+id/btnSms"
+        android:layout_alignStart="@+id/btnSms" />
 </RelativeLayout>

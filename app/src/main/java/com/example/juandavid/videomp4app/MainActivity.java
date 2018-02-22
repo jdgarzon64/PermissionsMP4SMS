@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,24 +47,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void grabar(View view) {
-        askForPermission(Manifest.permission.CAMERA, CAMERA);
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) !=
-                PackageManager.PERMISSION_GRANTED ) {
-            Toast.makeText(this, " It not permit", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(txtNombre.getText())) {
+            Toast.makeText(this, "debe escribir un nombre", Toast.LENGTH_SHORT).show();
+        } else {
+            askForPermission(Manifest.permission.CAMERA, CAMERA);
+            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) !=
+                    PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, " It not permit", Toast.LENGTH_SHORT).show();
 
-       } else {
+            } else {
 
-            Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-            File video = new File(getExternalFilesDir(null), txtNombre.getText().toString() + ".mp4");
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(video));
-            startActivity(intent);
+                Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                File video = new File(getExternalFilesDir(null), txtNombre.getText().toString() + ".mp4");
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(video));
+                startActivity(intent);
+            }
         }
     }
 
     public void play(View view) {
         askForPermission(Manifest.permission.READ_EXTERNAL_STORAGE, READSD);
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) !=
-                PackageManager.PERMISSION_GRANTED ) {
+                PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, " It not permit", Toast.LENGTH_SHORT).show();
 
         } else {
@@ -71,11 +76,13 @@ public class MainActivity extends AppCompatActivity {
             videoView.start();
         }
 
-    }    public void sendSMS(View view) {
+    }
+
+    public void sendSMS(View view) {
         askForPermission(Manifest.permission.SEND_SMS, SMS);
         askForPermission(Manifest.permission.READ_EXTERNAL_STORAGE, READSD);
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) !=
-                PackageManager.PERMISSION_GRANTED ) {
+                PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, " It not permit", Toast.LENGTH_SHORT).show();
 
         } else {
@@ -106,6 +113,24 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{permit}, requestCode);
 
             }
+        }
+    }
+
+    public void SendFile(View view) {
+        if (TextUtils.isEmpty(txtNombre.getText())) {
+            Toast.makeText(this, "no ha grabado aun ningun video", Toast.LENGTH_SHORT).show();
+        } else {
+            File filelocation = new File(getExternalFilesDir("") + "/" + txtNombre.getText().toString() + ".mp4");
+            Uri path = Uri.fromFile(filelocation);
+            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+            emailIntent.setType("vnd.android.cursor.dir/email");
+            String to[] = {"jdgarzon64@misena.edu.co"};
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, to);
+            emailIntent.putExtra(Intent.EXTRA_STREAM, path);
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
+            emailIntent.putExtra(Intent.EXTRA_TEXT, "body goes here");
+            startActivity(Intent.createChooser(emailIntent, "Send email ..."));
+
         }
     }
 }
